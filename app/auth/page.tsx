@@ -4,6 +4,7 @@ import {
 	type RegistrationResponseJSON,
 	startRegistration,
 } from "@simplewebauthn/browser";
+import type { VerifiedAuthenticationResponse } from "@simplewebauthn/server";
 import { useState } from "react";
 
 export default function Auth() {
@@ -36,8 +37,11 @@ export default function Auth() {
 			throw error;
 		}
 
+		/* Verification
+    Sends attestation to server + iron session with additional meta-data
+    */
 		const verificationResp = await fetch(
-			"/api/auth/register/passkey/initialize/complete",
+			"/api/auth/register/passkey/complete",
 			{
 				method: "POST",
 				headers: {
@@ -48,19 +52,20 @@ export default function Auth() {
 		);
 
 		// Wait for the results of verification
-		const verificationJSON = await verificationResp.json();
+		const verificationJSON =
+			(await verificationResp.json()) as VerifiedAuthenticationResponse;
 
 		// Show UI appropriate for the `verified` status
-		if (verificationJSON && verificationJSON.verified) {
+		if (verificationJSON?.verified) {
 			setPopupText("Success!");
-			setTimeout(() => setPopupText(undefined), 1000);
+			// setTimeout(() => setPopupText(undefined), 10000);
 		} else {
 			setPopupText(
 				`Oh no, something went wrong! Response: ${JSON.stringify(
 					verificationJSON,
 				)}`,
 			);
-			setTimeout(() => setPopupText(undefined), 1000);
+			// setTimeout(() => setPopupText(undefined), 10000);
 		}
 	};
 

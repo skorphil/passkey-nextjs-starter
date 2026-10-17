@@ -27,11 +27,6 @@ export async function POST(req: Request) {
 			// Don't prompt users for additional information about the authenticator
 			// (Recommended for smoother UX)
 			attestationType: "none",
-			supportedAlgorithmIDs: [-7, -257],
-			// authenticatorSelection: {
-			// 	// Defaults
-			// 	residentKey: "preferred",
-			// 	userVerification: "preferred",
 			// },
 		});
 
@@ -40,11 +35,14 @@ export async function POST(req: Request) {
 		cookieName: "registration-session",
 	});
 	session.userName = userName;
+	session.challenge = options.challenge;
 	await session.save();
 
 	return NextResponse.json(options);
 }
 
-type RegistrationSession = {
+export type RegistrationSession = {
 	userName: string;
+	challenge: string;
+	rpID: string;
 };
