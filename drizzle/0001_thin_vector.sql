@@ -1,0 +1,1 @@
+ALTER TABLE `passkeys` ADD `web_authn_user_id` text NOT NULL;

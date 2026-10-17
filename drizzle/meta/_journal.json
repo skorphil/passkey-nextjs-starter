@@ -8,6 +8,13 @@
       "when": 1792225338219,
       "tag": "0000_tranquil_major_mapleleaf",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1792235679644,
+      "tag": "0001_thin_vector",
+      "breakpoints": true
     }
   ]
 }

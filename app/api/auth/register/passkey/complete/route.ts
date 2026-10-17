@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 		cookieName: "registration-session",
 	});
 
-	if (!session.challenge || !session.userName)
+	if (!session.challenge || !session.userName || !session.webAuthnUserId)
 		return NextResponse.json(
 			{ error: "No registration in progress" },
 			{ status: 400 },
@@ -55,10 +55,12 @@ export async function POST(req: Request) {
 
 	const userId = crypto.randomUUID();
 	const userName = session.userName;
+	const webAuthnUserId = session.webAuthnUserId;
 
 	try {
 		await saveUserWithPasskey(userName, userId, {
 			id: credential.id,
+			webAuthnUserId,
 			publicKey: Buffer.from(credential.publicKey).toString("base64url"),
 			counter: credential.counter,
 			deviceType: credentialDeviceType,

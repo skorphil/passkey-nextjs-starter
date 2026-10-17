@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "./index";
 import { passkeys, users } from "./schema";
 
@@ -20,6 +21,7 @@ export async function saveUserToDb(
 type NewPasskey = {
 	id: string;
 	userId: string;
+	webAuthnUserId: string;
 	publicKey: string;
 	counter: number;
 	deviceType: string;
@@ -46,4 +48,17 @@ export async function saveUserWithPasskey(
 		await saveUserToDb(userName, userId, tx);
 		await savePasskeyToDb({ ...passkey, userId }, tx);
 	});
+}
+
+export async function getPasskeyByWebAuthnUserId(webAuthnUserId: string) {
+	const [passkey] = await db
+		.select()
+		.from(passkeys)
+		.where(eq(passkeys.webAuthnUserId, webAuthnUserId))
+		.limit(1);
+	return passkey;
+}
+
+export async function updatePasskeyCounter(id: string, counter: number) {
+	await db.update(passkeys).set({ counter }).where(eq(passkeys.id, id));
 }

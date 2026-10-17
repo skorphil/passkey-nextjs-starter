@@ -11,6 +11,7 @@ export const passkeys = sqliteTable("passkeys", {
 	userId: text("user_id")
 		.notNull()
 		.references(() => users.userId),
+	webAuthnUserId: text("web_authn_user_id").notNull(),
 	publicKey: text("public_key").notNull(),
 	counter: integer("counter").notNull().default(0),
 	deviceType: text("device_type").notNull(),

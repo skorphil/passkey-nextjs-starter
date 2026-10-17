@@ -27,6 +27,12 @@ export async function POST(req: Request) {
 			// Don't prompt users for additional information about the authenticator
 			// (Recommended for smoother UX)
 			attestationType: "none",
+			// Make credentials discoverable so usernameless login can find them
+			authenticatorSelection: {
+				residentKey: "required",
+				requireResidentKey: true,
+				userVerification: "required",
+			},
 			// },
 		});
 
@@ -36,6 +42,7 @@ export async function POST(req: Request) {
 	});
 	session.userName = userName;
 	session.challenge = options.challenge;
+	session.webAuthnUserId = options.user.id;
 	await session.save();
 
 	return NextResponse.json(options);
@@ -45,4 +52,5 @@ export type RegistrationSession = {
 	userName: string;
 	challenge: string;
 	rpID: string;
+	webAuthnUserId: string;
 };
